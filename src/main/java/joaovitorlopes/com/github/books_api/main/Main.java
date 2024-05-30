@@ -124,6 +124,21 @@ public class Main {
     }
 
     private void listLivingAuthorsInYear() {
+        System.out.println("Enter a year: ");
+        var year = reading.nextInt();
+        reading.nextLine();
+        var authors = authorsRepository.findLivingAuthors(year);
+        if (authors.isEmpty()) {
+            System.out.println("No living authors registered in the database for the year " + year + ".");
+        } else {
+            System.out.println("***** AUTHORS LIVE IN" + year + "*****");
+            for (var author : authors) {
+                System.out.printf("Name: %s%n", author.getName());
+                System.out.printf("Birth Year: %d%n", author.getBirthYear());
+                System.out.printf("Death Year: %d%n", author.getDeathYear());
+                System.out.println("*************************\n");
+            }
+        }
 
     }
 
