@@ -93,7 +93,19 @@ public class Main {
     }
 
     private void listRegisteredBooks() {
-
+        var books = booksRepository.findAll();
+        if(books.isEmpty()) {
+            System.out.println("No books registered in the database.");
+        } else {
+            System.out.println("*****BOOKS*****");
+            for (var book : books) {
+                System.out.printf("Title: %s%n",book.getTitle());
+                System.out.printf("Author: %s%n", book.getAuthor());
+                System.out.printf("Language: %s%n", book.getLanguage());
+                System.out.printf("Downloads Number: %d%n", book.getDownloadNumbers());
+                System.out.println("**************\n");
+            }
+        }
     }
 
     private void listRegisteredAuthors() {
