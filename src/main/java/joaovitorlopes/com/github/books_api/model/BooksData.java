@@ -10,7 +10,7 @@ public class BooksData {
     @JsonAlias("title")
     private String title;
     @JsonAlias("authors")
-    private List<String> authors;
+    private List<AuthorsData> authors;
     @JsonAlias("languages")
     private List<String> languages;
     @JsonAlias("download_count")
@@ -24,11 +24,11 @@ public class BooksData {
         this.title = title;
     }
 
-    public List<String> getAuthors() {
+    public List<AuthorsData> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(List<String> authors) {
+    public void setAuthors(List<AuthorsData> authors) {
         this.authors = authors;
     }
 

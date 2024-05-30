@@ -1,16 +1,35 @@
 package joaovitorlopes.com.github.books_api.main;
 
+import joaovitorlopes.com.github.books_api.model.Authors;
+import joaovitorlopes.com.github.books_api.model.AuthorsData;
+import joaovitorlopes.com.github.books_api.model.Books;
+import joaovitorlopes.com.github.books_api.model.BooksData;
+import joaovitorlopes.com.github.books_api.repository.AuthorsRepository;
 import joaovitorlopes.com.github.books_api.repository.BooksRepository;
+import joaovitorlopes.com.github.books_api.service.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+    private final BooksRepository booksRepository;
+    private final AuthorsRepository authorsRepository;
+    private final String API_URL = "https://gutendex.com/books";
 
-    private final BooksRepository repository;
     private Scanner reading = new Scanner(System.in);
+    private ConsumeAPI consumeAPI = new ConsumeAPI();
+    private BooksService booksService = new BooksService();
+    private DataConversion dataConversion = new DataConversion();
+    private NameConversion nameConversion = new NameConversion();
+    private LanguageConversion languageConversion = new LanguageConversion();
 
-    public Main(BooksRepository repository) {
-        this.repository = repository;
+    private List<BooksData> booksDataList = new ArrayList<>();
+    private List<AuthorsData> authorsDataList = new ArrayList<>();
+
+    public Main(BooksRepository booksRepository, AuthorsRepository authorsRepository) {
+        this.booksRepository = booksRepository;
+        this.authorsRepository = authorsRepository;
     }
 
     public void showMenu() {
@@ -59,7 +78,18 @@ public class Main {
     }
 
     private void searchBooksByTitle() {
-
+        var book = searchBooks();
+        if (book != null) {
+            System.out.println("*****BOOK*****");
+            System.out.printf("Title: %s%n",book.getTitle());
+            System.out.printf("Author: %s%n", nameConversion.formatName(book.getAuthors().get(0).getName()));
+            String language = String.join(", ", book.getLanguages());
+            System.out.printf("Language: %s%n", language);
+            System.out.printf("Downloads Number: %d%n", book.getDownloadsNumber());
+            System.out.println("*****BOOK***** \n");
+        } else {
+            System.out.println("No books found with the given title.");
+        }
     }
 
     private void listRegisteredBooks() {
@@ -76,5 +106,45 @@ public class Main {
 
     private void listBooksInCertainLanguage() {
 
+    }
+
+    private BooksData searchBooks() {
+        System.out.println("Enter a books title: ");
+        var title = reading.nextLine();
+        var json = consumeAPI.getData(API_URL + "?search=" + title.replace(" ", "%20"));
+        booksService = dataConversion.getData(json, BooksService.class);
+        if (!booksService.getBooksData().isEmpty()) {
+            var booksData = booksService.getBooksData().get(0);
+            getBooksData(booksData);
+            getAuthorsData(booksData.getAuthors());
+            return booksData;
+        } else {
+            return null;
+        }
+    }
+
+    private void getBooksData(BooksData booksData) {
+        var existentBook = booksRepository.findByTitle(booksData.getTitle());
+        if(existentBook == null) {
+            var book = new Books();
+            book.setTitle(booksData.getTitle());
+            book.setAuthor(booksData.getAuthors().get(0).getName());
+            book.setLanguage(String.join(", ", booksData.getLanguages()));
+            book.setDownloadNumbers(booksData.getDownloadsNumber());
+            booksRepository.save(book);
+        }
+    }
+
+    private void getAuthorsData(List<AuthorsData> authorsData) {
+        for (var authorData : authorsData) {
+            var existentAuthor = authorsRepository.findByName(authorData.getName());
+            if(existentAuthor == null) {
+                var author = new Authors();
+                author.setName(authorData.getName());
+                author.setBirthYear(authorData.getBirthYear());
+                author.setDeathYear(authorData.getDeathYear());
+                authorsRepository.save(author);
+            }
+        }
     }
 }
