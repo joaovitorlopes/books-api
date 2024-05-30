@@ -7,12 +7,17 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ConsumeAPI {
-    public String getData(String address) {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(address))
+    public String getData(String url) {
+        HttpClient client = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.ALWAYS)
                 .build();
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .build();
+
         HttpResponse<String> response = null;
+
         try {
             response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
@@ -24,5 +29,6 @@ public class ConsumeAPI {
 
         String json = response.body();
         return json;
+
     }
 }

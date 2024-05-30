@@ -129,9 +129,9 @@ public class Main {
         reading.nextLine();
         var authors = authorsRepository.findLivingAuthors(year);
         if (authors.isEmpty()) {
-            System.out.println("No living authors registered in the database for the year " + year + ".");
+            System.out.printf("No living authors registered in the database for the year %d%n", year);
         } else {
-            System.out.println("***** AUTHORS LIVE IN" + year + "*****");
+            System.out.printf("***** AUTHORS LIVE IN %d *****%n", year);
             for (var author : authors) {
                 System.out.printf("Name: %s%n", author.getName());
                 System.out.printf("Birth Year: %d%n", author.getBirthYear());
@@ -143,7 +143,19 @@ public class Main {
     }
 
     private void listBooksInCertainLanguage() {
-
+        System.out.println("Enter a language: ");
+        var language = languageConversion.convertLanguage(reading.nextLine());
+        var books = booksRepository.findBooksByLanguages(language);
+        if(books.isEmpty()) {
+            System.out.printf("No books registered in the database for the language %s.%n", language);
+        } else {
+            System.out.printf("***** BOOKS IN %s LANGUAGE *****%n", language);
+            for (var book : books) {
+                System.out.printf("Title: %s%n", book.getTitle());
+                System.out.printf("Author: %s%n", book.getAuthor());
+                System.out.println("*************************\n");
+            }
+        }
     }
 
     private BooksData searchBooks() {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DataConversion implements IDataConversion{
     private ObjectMapper mapper = new ObjectMapper();
 
+
     @Override
     public <T> T getData(String json, Class<T> tClass) {
         try {
