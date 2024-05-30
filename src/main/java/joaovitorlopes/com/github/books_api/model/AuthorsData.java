@@ -1,25 +1,16 @@
 package joaovitorlopes.com.github.books_api.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@Entity
-public class Authors {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AuthorsData {
+    @JsonAlias("name")
     private String name;
+    @JsonAlias("birth_year")
     private Integer birthYear;
+    @JsonAlias("death_year")
     private Integer deathYear;
-
-    public Authors() {}
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;

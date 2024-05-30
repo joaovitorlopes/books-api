@@ -8,12 +8,11 @@ public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String title;
     private String author;
     private String language;
     private Integer downloadNumbers;
-
-    public Books() {}
 
     public Long getId() {
         return id;
@@ -53,14 +52,5 @@ public class Books {
 
     public void setDownloadNumbers(Integer downloadNumbers) {
         this.downloadNumbers = downloadNumbers;
-    }
-
-    @Override
-    public String toString() {
-        return
-                "title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", language='" + language + '\'' +
-                ", downloadNumbers=" + downloadNumbers;
     }
 }
