@@ -103,13 +103,24 @@ public class Main {
                 System.out.printf("Author: %s%n", book.getAuthor());
                 System.out.printf("Language: %s%n", book.getLanguage());
                 System.out.printf("Downloads Number: %d%n", book.getDownloadNumbers());
-                System.out.println("**************\n");
+                System.out.println("***************\n");
             }
         }
     }
 
     private void listRegisteredAuthors() {
-
+        var authors = authorsRepository.findAll();
+        if (authors.isEmpty()) {
+            System.out.println("No author registered in the database.");
+        } else {
+            System.out.println("*****AUTHORS*****");
+            for (var author : authors) {
+                System.out.printf("Name: %s%n", author.getName());
+                System.out.printf("Birth Year: %d%n", author.getBirthYear());
+                System.out.printf("Death Year: %d%n", author.getDeathYear());
+                System.out.println("****************\n");
+            }
+        }
     }
 
     private void listLivingAuthorsInYear() {
