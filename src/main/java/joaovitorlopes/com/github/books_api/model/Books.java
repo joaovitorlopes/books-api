@@ -10,9 +10,27 @@ public class Books {
     private Long id;
     @Column(unique = true)
     private String title;
-    private String author;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Authors author;
     private String language;
     private Integer downloadNumbers;
+
+    public Books() {}
+
+    public Books(BooksData booksData) {
+        this.title = booksData.title();
+        Authors authors = new Authors(booksData.authors().get(0));
+        this.author = authors;
+        this.language = booksData.languages().get(0);
+        this.downloadNumbers = booksData.downloadsNumber();
+    }
+
+    public Books(Long id, String title, Authors authors, String language, Integer downloadNumbers) {
+        this.title = title;
+        this.author = authors;
+        this.language = language;
+        this.downloadNumbers = downloadNumbers;
+    }
 
     public Long getId() {
         return id;
@@ -30,11 +48,11 @@ public class Books {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public Authors getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Authors author) {
         this.author = author;
     }
 
@@ -52,5 +70,15 @@ public class Books {
 
     public void setDownloadNumbers(Integer downloadNumbers) {
         this.downloadNumbers = downloadNumbers;
+    }
+
+    @Override
+    public String toString() {
+        return "------------------ BOOK ------------------" +
+                "\nTitle: " + title +
+                "\nAuthor: " + author.getName() +
+                "\nLanguage: " + language +
+                "\nDownload Numbers: " + downloadNumbers +
+                "\n-------------------------------------------\n";
     }
 }
